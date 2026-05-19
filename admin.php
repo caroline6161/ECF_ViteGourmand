@@ -7,14 +7,14 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-// Actions Admin
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Modifier statut commande
+    
     if (isset($_POST['update_statut'])) {
         $pdo->prepare("UPDATE commandes SET statut = ? WHERE id = ?")
             ->execute([$_POST['nouveau_statut'], $_POST['commande_id']]);
     }
-    // Bloquer/Débloquer utilisateur
+    
     if (isset($_POST['toggle_statut'])) {
         $statut = ($_POST['current_statut'] === 'actif') ? 'inactif' : 'actif';
         $pdo->prepare("UPDATE utilisateurs SET statut = ? WHERE id = ?")

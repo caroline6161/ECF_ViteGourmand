@@ -5,16 +5,14 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once 'config/database.php';
 
-// Sécurité : L'utilisateur doit être connecté pour commander
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
 
-// On récupère l'ID du menu sélectionné
 $menu_id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
 
-// Récupération des informations du menu
 $stmtMenu = $pdo->prepare("SELECT * FROM menus WHERE menu_id = ?");
 $stmtMenu->execute([$menu_id]);
 $menu = $stmtMenu->fetch();
@@ -24,7 +22,6 @@ if (!$menu) {
     exit;
 }
 
-// Récupération des infos de l'utilisateur connecté via la session pour éviter les erreurs SQL de colonnes
 $user_nom = $_SESSION['user_nom'] ?? 'Client';
 $user_prenom = $_SESSION['user_prenom'] ?? '';
 $user_email = $_SESSION['user_email'] ?? '';
@@ -32,7 +29,6 @@ $user_telephone = $_SESSION['user_telephone'] ?? $_SESSION['user_gsm'] ?? '';
 
 $message = "";
 
-// --- TRAITEMENT DU FORMULAIRE DE VALIDATION DE COMMANDE ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_commande'])) {
     $adresse = htmlspecialchars(trim($_POST['adresse']));
     $ville = htmlspecialchars(trim($_POST['ville']));
@@ -41,20 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_commande'])) 
     $heure_prestation = $_POST['heure_prestation'];
     $nb_personnes = (int)$_POST['nb_personnes'];
 
-    // Validation du nombre de personnes minimal
     if ($nb_personnes < $menu['nb_pers_min']) {
         $message = "<div class='alert alert-danger rounded-0 small'>❌ Erreur : Le nombre de personnes ne peut pas être inférieur au minimum requis de " . $menu['nb_pers_min'] . " personnes.</div>";
     } else {
-        // Calcul des prix côté Serveur (Sécurité)
         $prix_menus_base = $menu['prix_base'] * $nb_personnes;
         
-        // Règle des 10% de réduction (min + 5 personnes)
         $reduction = 0;
         if ($nb_personnes >= ($menu['nb_pers_min'] + 5)) {
             $reduction = $prix_menus_base * 0.10;
         }
         
-        // Règle logistique de livraison hors Bordeaux
         $frais_livraison = 0;
         if (strtolower($ville) !== 'bordeaux') {
             $frais_livraison = 5 + (0.59 * $distance);
@@ -63,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_commande'])) 
         $total_final = $prix_menus_base - $reduction + $frais_livraison;
         $statut = 'En attente';
 
-        // --- ATTENTION ICI : SI L'INSERTION PLANTE, REMPLACE 'utilisateur_id' PAR LE NOM EXACT DE TA COLONNE DANS TA TABLE COMMANDES ---
         try {
             $insert = $pdo->prepare("INSERT INTO commandes (id_utilisateur, menu_id, total, statut, date_commande) VALUES (?, ?, ?, ?, NOW())");
             $insert->execute([$_SESSION['user_id'], $menu_id, $total_final, $statut]);
@@ -71,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_commande'])) 
             echo "<script>alert('🎉 Commande validée avec succès ! Redirection vers votre espace.'); window.location.href='mon_espace.php';</script>";
             exit;
         } catch (PDOException $e) {
-            // Si 'id_utilisateur' n'est pas le bon nom, on tente avec 'utilisateur_id' automatiquement pour te sauver le coup !
             try {
                 $insert = $pdo->prepare("INSERT INTO commandes (utilisateur_id, menu_id, total, statut, date_commande) VALUES (?, ?, ?, ?, NOW())");
                 $insert->execute([$_SESSION['user_id'], $menu_id, $total_final, $statut]);

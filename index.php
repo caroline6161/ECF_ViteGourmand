@@ -1,10 +1,10 @@
 <?php
-// 1. Connexion à la base de données au tout début du script
+
 require_once 'config/database.php';
 
-// 2. Récupération des avis UNIQUEMENT s'ils ont le statut "valide"
+
 try {
-    // Requête simplifiée et 100% conforme à ta structure phpMyAdmin
+    
     $requeteAvis = $pdo->query("
         SELECT commentaire, note, nom_client AS prenom 
         FROM avis 
@@ -14,12 +14,12 @@ try {
     ");
     $avisValides = $requeteAvis->fetchAll();
 } catch (Exception $e) {
-    // Affichage de l'erreur au cas où (très utile pour l'examen)
-    echo "<div class='alert alert-danger text-center m-3 small'>⚠️ Erreur SQL : " . $e->getMessage() . "</div>";
+    
+    echo "<div class='alert alert-danger text-center m-3 small'> Erreur SQL : " . $e->getMessage() . "</div>";
     $avisValides = [];
 }
 
-// 3. On inclut le header
+
 include 'includes/header.php';
 ?>
 
@@ -106,6 +106,6 @@ include 'includes/header.php';
 </div>
 
 <?php 
-// On inclut le footer tout à la fin pour fermer proprement la page HTML
+
 include 'includes/footer.php'; 
 ?>

@@ -20,10 +20,10 @@
             <div class="col-md-4">
                 <h5 class="mb-3" style="font-family: 'Playfair Display', serif; color: #c5a880 !important;">Informations</h5>
                 <ul class="list-unstyled small">
-                    <li class="mb-2"><a href="a_propos.php" class="text-decoration-none hover-link" style="color: #eaeaea !important;">👨‍🍳 À Propos de nous</a></li>
-                    <li class="mb-2"><a href="contact.php" class="text-decoration-none hover-link" style="color: #eaeaea !important;">✉️ Contactez-nous</a></li>
-                    <li class="mb-2"><a href="mentions_legales.php" class="text-decoration-none hover-link" style="color: #eaeaea !important;">⚖️ Mentions Légales</a></li>
-                    <li class="mb-2"><a href="cgv.php" class="text-decoration-none hover-link" style="color: #eaeaea !important;">📜 Conditions Générales de Vente</a></li>
+                    <li class="mb-2"><a href="a_propos.php" class="text-decoration-none hover-link" style="color: #eaeaea !important;"> À Propos de nous</a></li>
+                    <li class="mb-2"><a href="contact.php" class="text-decoration-none hover-link" style="color: #eaeaea !important;"> Contactez-nous</a></li>
+                    <li class="mb-2"><a href="mentions_legales.php" class="text-decoration-none hover-link" style="color: #eaeaea !important;"> Mentions Légales</a></li>
+                    <li class="mb-2"><a href="cgv.php" class="text-decoration-none hover-link" style="color: #eaeaea !important;"> Conditions Générales de Vente</a></li>
                 </ul>
             </div>
         </div>

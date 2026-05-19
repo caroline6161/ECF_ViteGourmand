@@ -12,10 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = htmlspecialchars(trim($_POST['description']));
 
     if (!empty($email) && !empty($titre) && !empty($description)) {
-        // Dans un vrai serveur, la fonction mail() transmettrait le message à l'entreprise (Julie et José)
-        // mail("contact@vitegourmand.fr", "Nouveau contact : " . $titre, $description, "From: " . $email);
         
-        $message_status = "<div class='alert alert-success rounded-0 small text-center'>🎉 Votre message a été simulé et envoyé par mail avec succès à l'équipe logistique !</div>";
+        
+        $message_status = "<div class='alert alert-success rounded-0 small text-center'> Votre message a été simulé et envoyé par mail avec succès à l'équipe logistique !</div>";
     } else {
         $message_status = "<div class='alert alert-danger rounded-0 small text-center'>❌ Veuillez remplir tous les champs du formulaire.</div>";
     }

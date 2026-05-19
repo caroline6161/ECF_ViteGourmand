@@ -5,7 +5,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once 'config/database.php';
 
-// Sécurité : Si le client n'est pas connecté, on le renvoie à la page de connexion
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
@@ -14,13 +13,11 @@ if (!isset($_SESSION['user_id'])) {
 $utilisateur_id = $_SESSION['user_id'];
 $message_action = "";
 
-// --- 1. TRAITEMENT : MODIFICATION DES INFOS PERSONNELLES SÉCURISÉE ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['modifier_profil'])) {
     $nom = htmlspecialchars(trim($_POST['nom']));
     $prenom = htmlspecialchars(trim($_POST['prenom']));
 
     if (!empty($nom) && !empty($prenom)) {
-        // Version blindée : On ne touche qu'au nom et prénom pour éviter les erreurs sur les colonnes de téléphone
         $updateUser = $pdo->prepare("UPDATE utilisateurs SET nom = ?, prenom = ? WHERE id = ?");
         if ($updateUser->execute([$nom, $prenom, $utilisateur_id])) {
             $_SESSION['user_nom'] = $nom;
@@ -32,11 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['modifier_profil'])) {
     }
 }
 
-// --- 2. TRAITEMENT : ANNULATION DE COMMANDE (SI "EN ATTENTE") ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['annuler_commande'])) {
     $commande_id = (int)$_POST['commande_id'];
 
-    // Détection dynamique du nom de colonne (id ou commande_id) pour éviter tout plantage
     $colonne_id = "id";
     try {
         $check = $pdo->prepare("SELECT statut FROM commandes WHERE id = ? AND utilisateur_id = ?");
@@ -59,12 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['annuler_commande'])) 
     }
 }
 
-// Récupération des infos de l'utilisateur
 $stmtUser = $pdo->prepare("SELECT * FROM utilisateurs WHERE id = ?");
 $stmtUser->execute([$utilisateur_id]);
 $user = $stmtUser->fetch();
 
-// Récupération des commandes du client connecté
 $stmt = $pdo->prepare("SELECT * FROM commandes WHERE utilisateur_id = ? ORDER BY date_commande DESC");
 $stmt->execute([$utilisateur_id]);
 $mes_commandes = $stmt->fetchAll();
@@ -78,7 +71,7 @@ include 'includes/header.php';
     <div class="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
         <div>
             <h6 class="text-uppercase small text-muted mb-1" style="letter-spacing: 1px;">Espace Personnel</h6>
-            <h2 style="font-family: 'Playfair Display', serif; color: #1a2536;">Bonjour, <?= htmlspecialchars($user['prenom'] ?? 'Client') ?> 👋</h2>
+            <h2 style="font-family: 'Playfair Display', serif; color: #1a2536;">Bonjour, <?= htmlspecialchars($user['prenom'] ?? 'Client') ?> </h2>
         </div>
         <div>
             <a href="menus.php" class="btn btn-dark rounded-0 text-uppercase small fw-bold" style="background: #1a2536; font-size: 0.8rem;">
@@ -141,7 +134,7 @@ include 'includes/header.php';
                                     <td class="p-3">
                                         <?php 
                                         $status = $commande['statut'];
-                                        $badge_class = "bg-warning text-dark"; // En attente
+                                        $badge_class = "bg-warning text-dark"; 
                                         if (in_array($status, ['Validé', 'Confirmé', 'Livré', 'Terminé'])) { $badge_class = "bg-success text-white"; }
                                         elseif (in_array($status, ['En cours', 'Préparation'])) { $badge_class = "bg-info text-white"; }
                                         elseif ($status === 'Annulé') { $badge_class = "bg-danger text-white"; }

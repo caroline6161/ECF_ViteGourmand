@@ -2,7 +2,7 @@
 include 'includes/header.php';
 require_once 'config/database.php';
 
-// Sécurité : Réservé au personnel connecté
+
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
     header('Location: login.php');
     exit;
@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
 
 $message = "";
 
-// TRAITEMENT : Validation ou Refus
+
 if (isset($_GET['action']) && isset($_GET['id'])) {
     $id = (int)$_GET['id'];
     $action = $_GET['action'] === 'valider' ? 'valide' : 'refuse';
@@ -21,7 +21,7 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
     }
 }
 
-// Récupération de tous les avis en attente ou déjà traités
+
 $stmt = $pdo->query("SELECT a.*, u.nom FROM avis a JOIN utilisateurs u ON a.user_id = u.id ORDER BY a.date_avis DESC");
 $avis_liste = $stmt->fetchAll();
 ?>

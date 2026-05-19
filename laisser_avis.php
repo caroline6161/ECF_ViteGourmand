@@ -2,7 +2,6 @@
 include 'includes/header.php';
 require_once 'config/database.php';
 
-// Sécurité : réservé aux connectés
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
@@ -13,7 +12,6 @@ $commande_id = isset($_GET['commande_id']) ? (int)$_GET['commande_id'] : 0;
 $error = "";
 $success = false;
 
-// Sécurité : On vérifie que la commande existe, appartient à l'utilisateur ET est bien "terminée"
 $stmt = $pdo->prepare("SELECT * FROM commandes WHERE commande_id = ? AND user_id = ? AND statut = 'terminée'");
 $stmt->execute([$commande_id, $user_id]);
 $commande = $stmt->fetch();
@@ -24,7 +22,6 @@ if (!$commande) {
     exit;
 }
 
-// Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $note = (int)$_POST['note'];
     $commentaire = htmlspecialchars(trim($_POST['commentaire']));
@@ -34,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (empty($commentaire)) {
         $error = "Le commentaire ne peut pas être vide.";
     } else {
-        // Insertion de l'avis
         $ins = $pdo->prepare("INSERT INTO avis (user_id, note, commentaire, statut_validation) VALUES (?, ?, ?, 'en_attente')");
         if ($ins->execute([$user_id, $note, $commentaire])) {
             $success = true;

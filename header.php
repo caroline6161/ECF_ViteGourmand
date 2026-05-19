@@ -1,5 +1,5 @@
 <?php
-// On démarre la session au tout début pour savoir si le client est connecté
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -15,7 +15,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <link href="assets/css/style.css" rel="stylesheet">
     
     <style>
-        /* Style de structure de la navbar */
+        
         h1, h2, h3, .navbar-brand { 
             font-family: 'Playfair Display', serif; 
         }
@@ -77,14 +77,14 @@ if (session_status() === PHP_SESSION_NONE) {
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
                         <a href="mon_espace.php" class="btn btn-outline-dark rounded-0 me-2" style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">
-                            👤 Mon Espace
+                             Mon Espace
                         </a>
                     </li>
 
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                         <li class="nav-item">
                             <a href="admin_commandes.php" class="btn btn-outline-warning rounded-0 ms-2" style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">
-                                💼 Administration
+                                 Administration
                             </a>
                         </li>
                     <?php endif; ?>

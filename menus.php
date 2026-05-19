@@ -2,7 +2,6 @@
 include 'includes/header.php';
 require_once 'config/database.php';
 
-// --- RECUPERATION DES FILTRES DEPUIS L'URL ---
 $prix_max = isset($_GET['prix_max']) ? (float)$_GET['prix_max'] : null;
 $prix_min_fourchette = isset($_GET['prix_min_f']) ? (float)$_GET['prix_min_f'] : null;
 $prix_max_fourchette = isset($_GET['prix_max_f']) ? (float)$_GET['prix_max_f'] : null;
@@ -10,7 +9,6 @@ $theme = isset($_GET['theme']) ? trim($_GET['theme']) : '';
 $regime = isset($_GET['regime']) ? trim($_GET['regime']) : '';
 $nb_pers = isset($_GET['nb_pers_min']) ? (int)$_GET['nb_pers_min'] : null;
 
-// --- SÉCURISATION & CONSTRUCTION DE LA REQUÊTE SQL ---
 $sql = "SELECT * FROM menus WHERE 1=1";
 $params = [];
 
@@ -115,7 +113,7 @@ $menus = $stmt->fetchAll();
 
                                     <div class="d-flex justify-content-between align-items-center mt-auto">
                                         <span class="fs-5 fw-bold" style="color: #1a2536;"><?= number_format($menu['prix_base'], 2, ',', ' ') ?> €<span class="small text-muted" style="font-size:0.75rem;">/pers</span></span>
-                                        <a href="menu_detail.php?id=<?= $menu['menu_id'] ?? $menu['id'] ?>" class="btn btn-outline-dark btn-sm rounded-0 text-uppercase small" style="font-size: 0.75rem; font-weight: 600;">📄 Voir le Menu</a>
+                                        <a href="menu_detail.php?id=<?= $menu['menu_id'] ?? $menu['id'] ?>" class="btn btn-outline-dark btn-sm rounded-0 text-uppercase small" style="font-size: 0.75rem; font-weight: 600;"> Voir le Menu</a>
                                     </div>
                                 </div>
                             </div>

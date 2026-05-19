@@ -3,13 +3,13 @@
    ========================================================================== */
 
 :root {
-    --bg-soft: #F5F5F0;   /* Sable / Soie */
-    --primary: #1A2238;   /* Bleu Minuit */
-    --accent: #C5A059;    /* Doré Champagne */
+    --bg-soft: #F5F5F0;   
+    --primary: #1A2238;   
+    --accent: #C5A059;    
     --text-muted: #555555;
 }
 
-/* Personnalisations globales complémentaires */
+
 body {
     background-color: var(--bg-soft);
     color: var(--primary);

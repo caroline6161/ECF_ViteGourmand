@@ -2,7 +2,7 @@
 include 'includes/header.php';
 require_once 'config/database.php';
 
-// Sécurité : Strictement réservé à l'Admin suprême (Rôle 1)
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     echo "<div class='container py-5'><div class='alert alert-danger'>Accès interdit. Réservé à l'administrateur.</div></div>";
     include 'includes/footer.php';
@@ -11,48 +11,46 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 
 $msg = "";
 
-// 1. ACTION : CRÉATION D'UN COMPTE EMPLOYÉ
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['creer_employe'])) {
     $email = htmlspecialchars(trim($_POST['email']));
     $nom = htmlspecialchars(trim($_POST['nom']));
-    $password_clair = $_POST['password']; // Le mot de passe choisi par l'admin
-    
-    // On hache le mot de passe pour la sécurité MySQL
+    $password_clair = $_POST['password']; 
+  
     $password_hash = password_hash($password_clair, PASSWORD_BCRYPT);
     
-    // Vérification si l'email existe déjà
+    
     $verif = $pdo->prepare("SELECT id FROM utilisateurs WHERE email = ?");
     $verif->execute([$email]);
     if ($verif->fetch()) {
         $msg = "<div class='alert alert-danger rounded-0 small'>Cet email est déjà utilisé.</div>";
     } else {
-        // Insertion de l'employé (on assume que le role_id pour employé est 3)
-        // Note : ajuste 'role_id' selon ton schéma de base
+        
         $ins = $pdo->prepare("INSERT INTO utilisateurs (nom, email, mot_de_passe, role_id, est_actif) VALUES (?, ?, ?, 3, 1)");
         if ($ins->execute([$nom, $email, $password_hash])) {
             
-            // Simulation de l'email imposée par José : l'employé reçoit un mail mais SANS le mot de passe
+            
             $subject = "Création de votre accès employé - Vite & Gourmand";
             $message_mail = "Bonjour $nom, votre administrateur vous a créé un compte employé avec l'identifiant : $email. Pour des raisons de sécurité, votre mot de passe ne vous est pas communiqué par mail. Veuillez vous rapprocher de lui pour l'obtenir.";
             
-            $_SESSION['notification_mail'] = "📧 [Mail RH Envoyé à $email] : $message_mail";
+            $_SESSION['notification_mail'] = " [Mail RH Envoyé à $email] : $message_mail";
             $msg = "<div class='alert alert-success rounded-0 small'>Compte employé créé ! Alerte RH simulée.</div>";
         }
     }
 }
 
-// 2. ACTION : TOOGLE ACTIF / INACTIF (Rendre un compte inutilisable)
+
 if (isset($_GET['toggle_id'])) {
     $emp_id = (int)$_GET['toggle_id'];
     
-    // On inverse la valeur de est_actif (0 devient 1, 1 devient 0)
+    
     $stmt = $pdo->prepare("UPDATE utilisateurs SET est_actif = 1 - est_actif WHERE id = ? AND role_id = 3");
     $stmt->execute([$emp_id]);
     header('Location: admin_employes.php');
     exit;
 }
 
-// Récupération de tous les comptes employés existants
+
 $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE role_id = 3 ORDER BY id DESC");
 $stmt->execute();
 $employes = $stmt->fetchAll();

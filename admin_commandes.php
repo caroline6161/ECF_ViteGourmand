@@ -2,19 +2,13 @@
 if (session_status() === PHP_SESSION_NONE) session_start();
 require_once 'config/database.php';
 
-// Sécurité : Seul l'admin entre
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: login.php');
     exit;
 }
 
-// -------------------------------------------------------------
-// SIMULATION DES DONNÉES NOSQL (MONGODB) POUR L'EXAMEN
-// -------------------------------------------------------------
-// Note pour ton oral : En local sur XAMPP, l'extension MongoDB 
-// demande une configuration complexe. On crée un tableau qui simule
-// parfaitement la structure BSON/JSON que renverrait un "MongoDB->find()"
-// -------------------------------------------------------------
+
 $commandesNoSQL = [
     ["menu" => "Menu de Noël", "quantite" => 12, "total" => 540.00, "date" => "2026-12-24"],
     ["menu" => "Menu Pâques", "quantite" => 8, "total" => 320.00, "date" => "2026-04-12"],
@@ -22,7 +16,7 @@ $commandesNoSQL = [
     ["menu" => "Menu Événement", "quantite" => 15, "total" => 750.00, "date" => "2026-05-15"]
 ];
 
-// Gestion des filtres de dates pour le Chiffre d'Affaires
+
 $date_debut = $_POST['date_debut'] ?? '';
 $date_fin = $_POST['date_fin'] ?? '';
 
@@ -30,7 +24,7 @@ $chiffreAffairesParMenu = [];
 $caTotal = 0;
 
 foreach ($commandesNoSQL as $cmd) {
-    // Filtrage par date si saisi
+    
     if (!empty($date_debut) && $cmd['date'] < $date_debut) continue;
     if (!empty($date_fin) && $cmd['date'] > $date_fin) continue;
 
@@ -41,7 +35,7 @@ foreach ($commandesNoSQL as $cmd) {
     $caTotal += $cmd['total'];
 }
 
-// Données préparées pour Chart.js (Graphique)
+
 $labelsMenus = [];
 $quantitesMenus = [];
 foreach ($commandesNoSQL as $cmd) {
@@ -49,7 +43,7 @@ foreach ($commandesNoSQL as $cmd) {
     $quantitesMenus[] = $cmd['quantite'];
 }
 
-// Traitement des actions MySQL classiques (Statuts commandes, blocages employés)
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_statut'])) {
     $pdo->prepare("UPDATE commandes SET statut = ? WHERE id = ?")
         ->execute([$_POST['nouveau_statut'], $_POST['commande_id']]);
@@ -164,7 +158,7 @@ include 'includes/header.php';
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-// Génération dynamique du graphique en barres demandé par l'énoncé
+
 const ctx = document.getElementById('chartMenus').getContext('2d');
 const chartMenus = new Chart(ctx, {
     type: 'bar',
@@ -174,7 +168,7 @@ const chartMenus = new Chart(ctx, {
             label: 'Nombre de commandes',
             data: <?= json_encode($quantitesMenus) ?>,
             backgroundColor: [
-                'rgba(197, 168, 128, 0.6)', // Couleur dorée assortie à ton footer !
+                'rgba(197, 168, 128, 0.6)', 
                 'rgba(26, 37, 54, 0.6)',
                 'rgba(40, 167, 69, 0.6)',
                 'rgba(220, 53, 69, 0.6)'

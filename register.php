@@ -16,25 +16,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($nom) && !empty($email) && !empty($password)) {
         
-        // 1. On vérifie si l'email n'est pas déjà pris
         $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE email = ?");
         $stmt->execute([$email]);
         
         if ($stmt->fetch()) {
             $error = "Désolé, cette adresse email est déjà enregistrée.";
         } else {
-            // 2. Hachage du mot de passe (Indispensable pour l'examen)
             $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
-            // 3. Insertion dans la base de données
             try {
-                // ATTENTION : Si ta colonne s'appelle 'password' ou 'mdp' au lieu de 'mot_de_passe', 
-                // change le mot 'mot_de_passe' juste en dessous !
+                
 $ins = $pdo->prepare("INSERT INTO utilisateurs (nom, email, password, telephone, role_id, est_actif) VALUES (?, ?, ?, ?, 2, 1)");                
                 $ins->execute([$nom, $email, $password_hash, $telephone]);                      
                 $success = "Félicitations, votre compte a été créé avec succès ! Vous pouvez maintenant vous connecter.";
             } catch (PDOException $e) {
-                // S'il y a une erreur SQL (par exemple un mauvais nom de colonne), elle s'affichera ici au lieu d'une page blanche
                 $error = "Erreur de base de données : " . $e->getMessage();
             }
         }

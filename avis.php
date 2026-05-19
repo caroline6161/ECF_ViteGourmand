@@ -4,14 +4,14 @@ include 'includes/header.php';
 
 $message = "";
 
-// --- ENREGISTREMENT DE L'AVIS ---
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nom = trim($_POST['nom_client']);
     $commentaire = trim($_POST['commentaire']);
     $note = (int)$_POST['note'];
 
     if (!empty($nom) && !empty($commentaire) && $note >= 1 && $note <= 5) {
-        // On sauvegarde le nom écrit par l'utilisateur et on met un ID par défaut (1)
+        
         $insert = $pdo->prepare("INSERT INTO avis (utilisateur_id, nom_client, commentaire, note) VALUES (1, ?, ?, ?)");
         $insert->execute([$nom, $commentaire, $note]);
         $message = "<div class='alert alert-success'>Merci ! Votre avis a bien été pris en compte.</div>";
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// --- RÉCUPÉRATION DES AVIS ---
+
 $query = $pdo->query("SELECT * FROM avis ORDER BY date_publication DESC");
 $les_avis = $query->fetchAll();
 ?>

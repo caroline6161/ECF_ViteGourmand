@@ -1,10 +1,8 @@
 <?php
-// 1. Initialisation de la session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Connexion à la base de données
 require_once 'config/database.php';
 include 'includes/header.php';
 
@@ -15,13 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     if (!empty($email) && !empty($password)) {
-        // On cherche l'utilisateur par son email
         $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
         if ($user) {
-            // CODE DE SECOURS : Si c'est l'admin, on passe direct sans vérifier le hash !
             if ($email === 'admin@mail.com' && $password === 'admin123') {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_nom'] = $user['nom'];
@@ -31,9 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
             
-            // Logique normale pour les autres comptes (Clients et Employés)
             if (password_verify($password, $user['mot_de_passe'])) {
-                // On vérifie si le compte a été bloqué
                 if ($user['statut'] === 'inactif') {
                     $error = "Votre compte est désactivé. Veuillez contacter l'administrateur.";
                 } else {
@@ -41,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_nom'] = $user['nom'];
                     $_SESSION['role'] = $user['role'];
                     
-                    // Redirection selon le rôle
                     if ($user['role'] === 'admin') {
                         header('Location: admin_commandes.php');
                     } else {
