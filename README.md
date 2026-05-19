@@ -19,13 +19,11 @@ Ce projet est une application web dynamique développée pour l'entreprise de tr
 - Avoir installé [XAMPP](https://www.apachefriends.org/) (Version PHP 8.x recommandée).
 - Git configuré sur votre machine.
 
+https://trello.com/invite/b/6a06407bb966fd8e662410b7/ATTI5df23ebe64b97885802285707b36e6ca5FBFC445/developpement-site-vite-et-gourmand
+
 ### 2. Clonage du projet
 Clonez le dépôt dans votre répertoire `htdocs` de XAMPP :
 ```bash
 cd C:/xampp/htdocs
 git clone [https://github.com/VOTRE_PSEUDO/ECF_ViteGourmand.git](https://github.com/VOTRE_PSEUDO/ECF_ViteGourmand.git)
 
-
-
-
-https://trello.com/invite/b/6a06407bb966fd8e662410b7/ATTI5df23ebe64b97885802285707b36e6ca5FBFC445/developpement-site-vite-et-gourmand
